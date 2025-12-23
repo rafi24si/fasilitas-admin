@@ -65,6 +65,146 @@
         .icon-purple {
             background: #8e24aa;
         }
+
+
+        .dev-section {
+            margin: 40px auto;
+            max-width: 1100px;
+        }
+
+        .dev-title {
+            font-weight: 800;
+            color: #14532d;
+            margin-bottom: 6px;
+        }
+
+        .dev-subtitle {
+            color: #4b5563;
+            margin-bottom: 28px;
+            max-width: 700px;
+        }
+
+        .dev-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 24px;
+        }
+
+        .dev-card {
+            background: rgba(255, 255, 255, .92);
+            backdrop-filter: blur(14px);
+            border-radius: 20px;
+            border: 1px solid #e5e7eb;
+            box-shadow: 0 12px 32px rgba(0, 0, 0, .12);
+            transition: .35s ease;
+        }
+
+        .dev-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 20px 45px rgba(0, 0, 0, .18);
+        }
+
+        .dev-card-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 24px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .dev-avatar {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            color: #fff;
+            font-size: 20px;
+        }
+
+        .dev-avatar.green {
+            background: linear-gradient(135deg, #16a34a, #22c55e);
+        }
+
+        .dev-avatar.blue {
+            background: linear-gradient(135deg, #2563eb, #60a5fa);
+        }
+
+        .dev-card-header h5 {
+            margin: 0;
+            font-weight: 700;
+            color: #111827;
+        }
+
+        .dev-card-header span {
+            font-size: 13px;
+            color: #16a34a;
+            font-weight: 600;
+        }
+
+        .dev-card-body {
+            padding: 22px 24px;
+        }
+
+        .dev-card-body ul {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 18px;
+            font-size: 14px;
+            color: #374151;
+        }
+
+        .dev-card-body li {
+            margin-bottom: 6px;
+        }
+
+        .dev-social {
+            display: flex;
+            gap: 10px;
+        }
+
+        .dev-social a {
+            flex: 1;
+            text-align: center;
+            padding: 8px 0;
+            border-radius: 999px;
+            font-size: 13px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: .25s ease;
+        }
+
+        .dev-social a.linkedin {
+            background: #eff6ff;
+            color: #1d4ed8;
+        }
+
+        .dev-social a.linkedin:hover {
+            background: #1d4ed8;
+            color: #fff;
+        }
+
+        .dev-social a.github {
+            background: #f3f4f6;
+            color: #111827;
+        }
+
+        .dev-social a.github:hover {
+            background: #111827;
+            color: #fff;
+        }
+
+        .dev-social a.instagram {
+            background: #fdf2f8;
+            color: #be185d;
+        }
+
+        .dev-social a.instagram:hover {
+            background: linear-gradient(135deg, #ec4899, #db2777);
+            color: #fff;
+        }
     </style>
 @endpush
 
@@ -238,6 +378,78 @@
                 </div>
 
             </div>
+
+            <div class="dev-section fade-in">
+
+                <h3 class="dev-title"> Tim Pengembang</h3>
+                <p class="dev-subtitle">
+                    Aplikasi ini dikembangkan oleh mahasiswa Program Studi Sistem Informasi
+                    dengan fokus pada manajemen fasilitas dan layanan desa.
+                </p>
+
+                <div class="dev-grid">
+
+                    <!-- DEVELOPER 1 -->
+                    <div class="dev-card">
+                        <div class="dev-card-header">
+                            <div class="dev-avatar green">RM</div>
+                            <div>
+                                <h5>Rizky Martin Pasaribu</h5>
+                            </div>
+                        </div>
+
+                        <div class="dev-card-body">
+                            <ul>
+                                <li><strong>NIM</strong> : 2457301126</li>
+                                <li><strong>Jurusan</strong> : Sistem Informasi</li>
+                            </ul>
+
+                            <div class="dev-social">
+                                <a href="https://www.linkedin.com/" target="_blank" class="linkedin">
+                                    <i class="ti ti-brand-linkedin"></i> LinkedIn
+                                </a>
+                                <a href="https://github.com/" target="_blank" class="github">
+                                    <i class="ti ti-brand-github"></i> GitHub
+                                </a>
+                                <a href="https://www.instagram.com/" target="_blank" class="instagram">
+                                    <i class="ti ti-brand-instagram"></i> Instagram
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- DEVELOPER 2 -->
+                    <div class="dev-card">
+                        <div class="dev-card-header">
+                            <div class="dev-avatar blue">TK</div>
+                            <div>
+                                <h5>Tiara Kania Noer Riska</h5>
+                            </div>
+                        </div>
+
+                        <div class="dev-card-body">
+                            <ul>
+                                <li><strong>NIM</strong> : NGASAL</li>
+                                <li><strong>Jurusan</strong> : Sistem Informasi</li>
+                            </ul>
+
+                            <div class="dev-social">
+                                <a href="https://www.linkedin.com/" target="_blank" class="linkedin">
+                                    <i class="ti ti-brand-linkedin"></i> LinkedIn
+                                </a>
+                                <a href="https://github.com/" target="_blank" class="github">
+                                    <i class="ti ti-brand-github"></i> GitHub
+                                </a>
+                                <a href="https://www.instagram.com/" target="_blank" class="instagram">
+                                    <i class="ti ti-brand-instagram"></i> Instagram
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
 
 
         </div>

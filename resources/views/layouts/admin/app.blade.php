@@ -162,7 +162,7 @@
         width: 56px;
         height: 56px;
         border: 5px solid #e0e0e0;
-        border-top: 5px solid #C62828;
+        border-top: 5px solid #01c124a7;
         /* MERAH PARSTAY */
         border-radius: 50%;
         animation: spin 1s linear infinite;
@@ -173,7 +173,7 @@
         margin-top: 12px;
         font-size: 14px;
         font-weight: 500;
-        color: #C62828;
+        color: #0bb933;
         letter-spacing: .5px;
     }
 
