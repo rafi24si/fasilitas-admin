@@ -1,80 +1,62 @@
 <?php
+
 namespace App\Http\Controllers;
 
-use App\Models\BookingHomestay;
-use App\Models\DestinasiWisata;
-use App\Models\Homestay;
-use App\Models\UlasanWisata;
 use App\Models\Warga;
-// ⬅️ TAMBAHAN PENTING
+use App\Models\FasilitasUmum;
+use App\Models\PeminjamanFasilitas;
+use App\Models\PembayaranFasilitas;
+use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
     public function index()
     {
-        // ===============================
-        //  STATISTIK UTAMA
-        // ===============================
-        $totalHomestay  = Homestay::count();
-        $totalDestinasi = DestinasiWisata::count();
-        $totalBooking   = BookingHomestay::count();
-        $totalUlasan    = UlasanWisata::count();
+        /* =====================
+           STATISTIK UTAMA
+        ====================== */
+        $totalWarga = Warga::count();
 
-        // ===============================
-        //  CHART – DUMMY (BISA DIGANTI REAL)
-        // ===============================
-        $chartKunjungan = [50, 70, 65, 90, 120, 160, 140];
+        $totalFasilitas = FasilitasUmum::count();
 
-        $chartHunian = [
-            'labels' => Homestay::pluck('nama'),
-            'values' => Homestay::pluck('harga_per_malam'),
-        ];
+        $peminjamanAktif = PeminjamanFasilitas::whereIn('status', [
+            'menunggu',
+            'disetujui',
+            'dipakai'
+        ])->count();
 
-        // ===============================
-        //  HOMESTAY TERBARU
-        // ===============================
-        $homestayTerbaru = Homestay::orderBy('homestay_id', 'DESC')
-            ->limit(15)
-            ->get();
+        $totalPembayaran = PembayaranFasilitas::sum('jumlah');
 
-        // ===============================
-        //  ULASAN TERBARU
-        // ===============================
-        $ulasanTerbaru = UlasanWisata::with(['warga', 'destinasi'])
-            ->orderBy('ulasan_id', 'DESC')
-            ->limit(5)
-            ->get();
+        /* =====================
+           DATA CHART BULANAN
+        ====================== */
+        $chartBulanan = PeminjamanFasilitas::select(
+                DB::raw('MONTH(tanggal_mulai) as bulan'),
+                DB::raw('COUNT(*) as total')
+            )
+            ->whereYear('tanggal_mulai', date('Y'))
+            ->groupBy('bulan')
+            ->orderBy('bulan')
+            ->pluck('total', 'bulan');
 
-        // ===============================
-        //  WARGA TERBARU  ⬅️ BUAT NGISI $wargaTerbaru
-        // ===============================
-        $wargaTerbaru = Warga::orderBy('warga_id', 'DESC')
-            ->limit(5)
-            ->get();
+        // Mapping agar bulan kosong tetap muncul
+        $chartData = [];
+        for ($i = 1; $i <= 12; $i++) {
+            $chartData[] = $chartBulanan[$i] ?? 0;
+        }
 
-        // ===============================
-        //  EVENT WISATA (DUMMY)
-        // ===============================
-        $eventWisata = [
-            ['nama' => 'Festival Kuliner Desa', 'tanggal' => '12 Februari'],
-            ['nama' => 'Gerak Jalan Sehat', 'tanggal' => '20 Februari'],
-            ['nama' => 'Lomba Foto Wisata', 'tanggal' => '5 Maret'],
-        ];
-
-        // ===============================
-        //  KIRIM DATA KE VIEW
-        // ===============================
         return view('dashboard', compact(
-            'totalHomestay',
-            'totalDestinasi',
-            'totalBooking',
-            'totalUlasan',
-            'chartKunjungan',
-            'chartHunian',
-            'homestayTerbaru',
-            'eventWisata',
-            'ulasanTerbaru',
-            'wargaTerbaru' // ⬅️ JANGAN LUPA DIKIRIM
+            'totalWarga',
+            'totalFasilitas',
+            'peminjamanAktif',
+            'totalPembayaran',
+            'chartData'
         ));
+
+        $statusPeminjaman = PeminjamanFasilitas::select('status', DB::raw('COUNT(*) as total'))
+    ->groupBy('status')
+    ->pluck('total', 'status');
     }
+
+    
 }

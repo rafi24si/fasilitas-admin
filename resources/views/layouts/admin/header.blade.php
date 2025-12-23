@@ -1,124 +1,123 @@
-<div class="app-topstrip py-3 px-4 w-100 d-lg-flex align-items-center justify-content-between"
-    style="background:#C62828; backdrop-filter:blur(6px); box-shadow:0 3px 12px rgba(0,0,0,0.2);">
+<div class="app-topstrip py-3 px-4 d-lg-flex align-items-center justify-content-between"
+    style="
+        background:#0bba45;
+        box-shadow:0 3px 12px rgba(0,0,0,0.2);
+        margin-left:260px;
+        width:calc(100% - 260px);
+     ">
+
+
 
     {{-- BAGIAN KIRI --}}
     <div class="d-flex align-items-center gap-4">
 
-        {{-- LOGO --}}
-        <a href="{{ route('dashboard') }}" class="d-flex align-items-center gap-2 text-white text-decoration-none">
-            <img src="{{ asset('assets/images/logo.png') }}" style="width:55px;" class="drop-shadow-lg">
-            <span class="fw-bold fs-5" style="letter-spacing:0.5px;">ADMIN PARIWISATA & HOMESTAY</span>
+        {{-- LOGO & TITLE --}}
+        <a href="{{ route('dashboard') }}" class="d-flex align-items-center gap-3 text-white text-decoration-none">
+
+            <img src="{{ asset('assets/images/logo.jpeg') }}" style="width:100px;" class="drop-shadow-lg">
+
+            <div class="lh-sm">
+                <div class="fw-bold fs-5" style="letter-spacing:.5px;">
+                    SISTEM FASILITAS DESA
+                </div>
+                <small class="opacity-75">
+                    Peminjaman Ruang & Sarana Umum
+                </small>
+            </div>
         </a>
 
+        {{-- QUICK MENU --}}
         <div class="d-none d-xl-flex align-items-center gap-2">
 
-            <a href="{{ route('destinasi.index') }}" class="btn btn-sm px-3 py-1 text-white"
-                style="background:rgba(255,255,255,0.18); border-radius:8px;">
-                <i class="ti ti-map-pin fs-5"></i> Destinasi
+            <a href="javascript:void(0)" class="btn btn-sm px-3 py-1 text-white disabled-menu" aria-disabled="true">
+                <i class="ti ti-building-community fs-5"></i>
+                Fasilitas
             </a>
 
-            <a href="{{ route('homestay.index') }}" class="btn btn-sm px-3 py-1 text-white"
-                style="background:rgba(255,255,255,0.18); border-radius:8px;">
-                <i class="ti ti-home fs-5"></i> Homestay
+            <a href="javascript:void(0)" class="btn btn-sm px-3 py-1 text-white disabled-menu" aria-disabled="true">
+                <i class="ti ti-calendar-event fs-5"></i>
+                Peminjaman
             </a>
 
-            <a href="{{ route('booking.index') }}" class="btn btn-sm px-3 py-1 text-white"
-                style="background:rgba(255,255,255,0.18); border-radius:8px;">
-                <i class="ti ti-calendar fs-5"></i> Booking
+            <a href="javascript:void(0)" class="btn btn-sm px-3 py-1 text-white disabled-menu" aria-disabled="true">
+                <i class="ti ti-clock fs-5"></i>
+                Jadwal
+            </a>
+
+            <a href="javascript:void(0)" class="btn btn-sm px-3 py-1 text-white disabled-menu" aria-disabled="true">
+                <i class="ti ti-file-text fs-5"></i>
+                Laporan
             </a>
 
         </div>
 
-
     </div>
 
-    {{-- BAGIAN KANAN (DROPDOWN USER) --}}
+    {{-- BAGIAN KANAN (USER) --}}
     <div class="d-flex align-items-center gap-3">
 
-        @if (session()->has('user_id'))
+        @php
+            $user = null;
+            if (session()->has('user_id')) {
+                $user = \App\Models\User::with('fotoProfil')->find(session('user_id'));
+            }
+        @endphp
 
+        @if ($user)
             <div class="dropdown">
 
-                {{-- BUTTON --}}
-                <button class="btn d-flex align-items-center gap-2 px-3 py-2 text-white"
-                    style="background:rgba(255,255,255,0.15);
-               border:1px solid rgba(255,255,255,0.25);
-               backdrop-filter:blur(10px);
-               border-radius:10px;"
-                    data-bs-toggle="dropdown">
+                {{-- TOGGLE --}}
+                <a href="#" class="d-flex align-items-center gap-3 text-decoration-none dropdown-toggle"
+                    id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false"
+                    style="
+                    background:#ffffff;
+                    padding:8px 14px;
+                    border-radius:14px;
+                    border:1px solid #e5e7eb;
+                    box-shadow:0 4px 12px rgba(0,0,0,.12);
+               ">
 
-                    {{-- FOTO PROFIL --}}
-                    @if (isset($user) && $user->fotoProfil)
-                        <img src="{{ asset('storage/' . $user->fotoProfil->file_url) }}" class="rounded-circle"
-                            width="36" height="36" style="object-fit:cover;">
-                    @else
-                        <img src="{{ asset('images/default-user.png') }}" class="rounded-circle" width="36"
-                            height="36">
-                    @endif
+                    {{-- AVATAR --}}
+                    <img src="{{ $user->fotoProfil ? asset('storage/' . $user->fotoProfil->file_url) : asset('images/default-user.png') }}"
+                        class="rounded-circle" width="40" height="40" style="object-fit:cover;">
 
-                    {{-- INFO USER --}}
-                    <div class="text-start" style="line-height:1;">
-                        <div class="fw-bold">{{ session('user_name') }}</div>
-                        <small class="opacity-75">{{ ucfirst(session('role')) }}</small>
+                    {{-- INFO --}}
+                    <div class="d-none d-md-block lh-sm">
+                        <div class="fw-semibold text-dark">
+                            {{ $user->name }}
+                        </div>
+                        <small class="text-muted">
+                            {{ ucfirst($user->role) }}
+                        </small>
                     </div>
+                </a>
 
-                    <i class="ti ti-chevron-down ms-1"></i>
-                </button>
+                {{-- DROPDOWN --}}
+                <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2"
+                    style="min-width:220px; border-radius:14px;">
 
+                    <li class="px-3 py-2">
+                        <a href="{{ route('user.profil') }}" class="dropdown-item d-flex align-items-center gap-2">
+                            <i class="ti ti-user"></i>
+                            Profil Saya
+                        </a>
+                    </li>
 
-                {{-- DROPDOWN MENU FIX --}}
-                @if (isset($user))
-                    <ul class="dropdown-menu dropdown-menu-end shadow-lg p-2"
-                        style="border-radius:12px; min-width:260px;">
+                    <li>
+                        <hr class="dropdown-divider">
+                    </li>
 
-                        {{-- INFO USER --}}
-                        <li class="px-3 py-2">
-                            <div class="d-flex align-items-center gap-3">
-
-                                {{-- FOTO PROFIL --}}
-                                @if ($user->fotoProfil)
-                                    <img src="{{ asset('storage/' . $user->fotoProfil->file_url) }}"
-                                        class="rounded-circle" width="45" height="45" style="object-fit:cover;">
-                                @else
-                                    <img src="{{ asset('images/default-user.png') }}" class="rounded-circle"
-                                        width="45" height="45">
-                                @endif
-
-                                <div class="lh-sm">
-                                    <div class="fw-semibold">{{ $user->name }}</div>
-                                    <small class="text-muted">{{ $user->email }}</small>
-                                </div>
-
-                            </div>
-                        </li>
-
-                        <li>
-                            <hr class="dropdown-divider">
-                        </li>
-
-                        {{-- PROFIL --}}
-                        <li>
-                            <a href="{{ route('user.profil') }}" class="dropdown-item d-flex align-items-center gap-2">
-                                <i class="ti ti-user-edit"></i> Profil Saya
-                            </a>
-                        </li>
-
-                        <li>
-                            <hr class="dropdown-divider">
-                        </li>
-
-                        {{-- LOGOUT --}}
-                        <li>
-                            <a href="{{ route('logout') }}"
-                                class="dropdown-item text-danger d-flex align-items-center gap-2"
+                    <li class="px-3 py-2">
+                        <form method="POST" action="{{ route('logout') }}">
+                            @csrf
+                            <button type="submit" class="dropdown-item d-flex align-items-center gap-2 text-danger"
                                 onclick="return confirm('Keluar dari aplikasi?')">
-                                <i class="ti ti-logout"></i> Keluar
-                            </a>
-                        </li>
-
-                    </ul>
-                @endif
-
+                                <i class="ti ti-logout"></i>
+                                Logout
+                            </button>
+                        </form>
+                    </li>
+                </ul>
 
             </div>
         @else
@@ -129,13 +128,13 @@
         @endif
 
     </div>
-
-</div>
-
-{{-- NAV BAWAH --}}
-<div class="d-flex align-items-center gap-2 px-4 py-2" style="background:#FDECEC; border-bottom:1px solid #f3d4d4;">
-    <span class="fw-bold text-danger small">Panel Navigasi Cepat</span>
-</div>
-
-{{-- WAJIB AGAR DROPDOWN BOOTSTRAP BERFUNGSI --}}
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+document.querySelectorAll('.dropdown-toggle').forEach(el => {
+    new bootstrap.Dropdown(el)
+})
+</script>
+
+
+</div>

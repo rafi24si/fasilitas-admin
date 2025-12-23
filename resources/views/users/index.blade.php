@@ -1,8 +1,11 @@
 @extends('layouts.admin.app')
-@section('title', 'Data User')
+@section('title', 'Manajemen User')
 
 @push('styles')
     <style>
+        /* =====================
+           ANIMATION
+        ===================== */
         .fade-in {
             animation: fadeIn .5s ease-in-out;
         }
@@ -19,41 +22,124 @@
             }
         }
 
+        /* =====================
+           PAGE
+        ===================== */
         .page-container {
             padding-top: 35px;
         }
 
-        .password-box {
-            display: flex;
-            align-items: center;
-            gap: 8px;
+        /* =====================
+           USER CARD
+        ===================== */
+        .user-card {
+            border-radius: 18px;
+            transition: .3s ease;
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, .08);
         }
 
-        .toggle-eye {
-            cursor: pointer;
-            font-size: 18px;
+        .user-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 18px 38px rgba(0, 0, 0, .16);
+        }
+
+        /* =====================
+           AVATAR
+        ===================== */
+        .user-avatar {
+            width: 90px;
+            height: 90px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 4px solid #dcfce7;
+            background: #f0fdf4;
+        }
+
+        /* =====================
+           ROLE BADGE
+        ===================== */
+        .badge-role {
+            background: linear-gradient(135deg, #16a34a, #22c55e);
+            color: #ffffff;
+            padding: 6px 16px;
+            border-radius: 50px;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: .3px;
+            box-shadow: 0 4px 14px rgba(22, 163, 74, .35);
+        }
+
+        /* =====================
+           ICON BUTTON
+        ===================== */
+        .btn-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: .2s ease;
+        }
+
+        .btn-icon:hover {
+            transform: scale(1.08);
+        }
+
+        /* =====================
+           ACTION COLORS
+        ===================== */
+        .btn-edit {
+            background: #ecfeff;
+            color: #0369a1;
+            border: 1px solid #bae6fd;
+        }
+
+        .btn-edit:hover {
+            background: #0ea5e9;
+            color: #fff;
+        }
+
+        .btn-delete {
+            background: #fef2f2;
+            color: #b91c1c;
+            border: 1px solid #fecaca;
+        }
+
+        .btn-delete:hover {
+            background: #dc2626;
+            color: #fff;
         }
     </style>
 @endpush
 
+
 @section('content')
     <div class="container-fluid fade-in page-container">
 
-        <div class="d-flex justify-content-between mb-3">
-            <h3 class="fw-bold text-blue">👤 Manajemen User</h3>
-            <a href="{{ route('user.create') }}" class="btn btn-primary px-4">+ Tambah User</a>
+        {{-- HEADER --}}
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h3 class="fw-bold text-primary mb-0">👤 Manajemen User</h3>
+                <small class="text-muted">Kelola akun admin & petugas</small>
+            </div>
+
+            <a href="{{ route('user.create') }}" class="btn btn-primary rounded-pill px-4">
+                + Tambah User
+            </a>
         </div>
 
-        {{-- FILTER & SEARCH --}}
-        <form method="GET" class="row g-2 mb-3">
-
-            <div class="col-md-3">
-                <input type="text" name="search" class="form-control" placeholder="Cari nama atau email..."
-                    value="{{ request('search') }}">
+        {{-- FILTER --}}
+        <form method="GET" class="row g-2 mb-4">
+            <div class="col-md-4">
+                <input type="text" name="search" class="form-control rounded-pill"
+                    placeholder="🔍 Cari nama atau email..." value="{{ request('search') }}">
             </div>
 
             <div class="col-md-3">
-                <select name="role" class="form-control">
+                <select name="role" class="form-select rounded-pill">
                     <option value="all">Semua Role</option>
                     <option value="admin" {{ request('role') == 'admin' ? 'selected' : '' }}>Admin</option>
                     <option value="petugas" {{ request('role') == 'petugas' ? 'selected' : '' }}>Petugas</option>
@@ -61,98 +147,53 @@
             </div>
 
             <div class="col-md-2">
-                <button class="btn btn-info w-100">Filter</button>
+                <button class="btn btn-info rounded-pill w-100">Filter</button>
             </div>
-
         </form>
 
-        <div class="card shadow-sm p-3">
-            <table class="table table-hover align-middle">
-                <thead class="table-dark">
-                    <tr>
-                        <th>#</th>
-                        <th>Foto</th>
-                        <th>Nama</th>
-                        <th>Email</th>
-                        <th>Password</th>
-                        <th>Role</th>
-                        <th>Aksi</th>
-                    </tr>
-                </thead>
+        {{-- USER CARD GRID --}}
+        <div class="row g-4">
+            @foreach ($users as $u)
+                <div class="col-xl-3 col-lg-4 col-md-6">
+                    <div class="card user-card shadow-sm border-0 h-100">
 
-                <tbody>
-                    @foreach ($users as $u)
-                        <tr>
-                            <td>{{ $loop->iteration + ($users->currentPage() - 1) * $users->perPage() }}</td>
+                        <div class="card-body text-center">
+                            <img src="{{ $u->fotoProfil ? asset('storage/' . $u->fotoProfil->file_url) : asset('images/default-user.png') }}"
+                                class="rounded-circle user-avatar mb-3">
 
-                            {{-- FOTO USER --}}
-                            <td>
-                                @if ($u->fotoProfil)
-                                    <img src="{{ asset('storage/' . $u->fotoProfil->file_url) }}" class="rounded-circle"
-                                        width="45" height="45" style="object-fit: cover;">
-                                @else
-                                    <img src="{{ asset('images/default-user.png') }}" class="rounded-circle" width="45"
-                                        height="45">
-                                @endif
-                            </td>
+                            <h6 class="fw-bold mb-1">{{ $u->name }}</h6>
+                            <small class="text-muted d-block mb-3">{{ $u->email }}</small>
 
-                            <td>{{ $u->name }}</td>
-                            <td>{{ $u->email }}</td>
+                            <span class="badge-role">
+                                {{ ucfirst($u->role) }}
+                            </span>
+                        </div>
 
-                            {{-- PASSWORD --}}
-                            <td>
-                                <div class="password-box">
-                                    <span class="password-mask" id="mask-{{ $u->id }}">••••••••••</span>
-                                    <span class="password-real d-none"
-                                        id="real-{{ $u->id }}">{{ $u->password }}</span>
-                                    <span class="toggle-eye text-primary"
-                                        onclick="togglePassword({{ $u->id }})">👁️</span>
-                                </div>
-                            </td>
+                        <div class="card-footer bg-white border-0 d-flex justify-content-center gap-2 pb-3">
+                            <a href="{{ route('user.edit', $u->id) }}" class="btn btn-outline-warning btn-icon"
+                                title="Edit User">
+                                ✏️
+                            </a>
 
-                            <td>
-                                <span class="badge bg-primary">{{ ucfirst($u->role) }}</span>
-                            </td>
+                            <form method="POST" action="{{ route('user.destroy', $u->id) }}"
+                                onsubmit="return confirm('Yakin ingin menghapus user ini?')">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-outline-danger btn-icon" title="Hapus User">
+                                    🗑️
+                                </button>
+                            </form>
+                        </div>
 
-                            <td>
-                                <a href="{{ route('user.edit', $u->id) }}" class="btn btn-warning btn-sm">Edit</a>
+                    </div>
+                </div>
+            @endforeach
+        </div>
 
-                                <form method="POST" action="{{ route('user.destroy', $u->id) }}" class="d-inline"
-                                    onsubmit="return confirm('Yakin ingin menghapus user?')">
-                                    @csrf @method('DELETE')
-                                    <button class="btn btn-danger btn-sm">Hapus</button>
-                                </form>
-                            </td>
-                        </tr>
-                    @endforeach
-                </tbody>
-
-
-            </table>
-
-            {{-- PAGINATION SIMPLE & RAPI --}}
-            <div class="d-flex justify-content-center mt-3">
-                {{ $users->onEachSide(1)->links('pagination::bootstrap-5') }}
-            </div>
-
+        {{-- PAGINATION --}}
+        <div class="d-flex justify-content-center mt-4">
+            {{ $users->onEachSide(1)->links('pagination::bootstrap-5') }}
         </div>
 
     </div>
-
-    {{-- SHOW / HIDE PASSWORD --}}
-    <script>
-        function togglePassword(id) {
-            const mask = document.getElementById('mask-' + id);
-            const real = document.getElementById('real-' + id);
-
-            if (real.classList.contains('d-none')) {
-                real.classList.remove('d-none');
-                mask.classList.add('d-none');
-            } else {
-                real.classList.add('d-none');
-                mask.classList.remove('d-none');
-            }
-        }
-    </script>
-
 @endsection

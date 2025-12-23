@@ -19,452 +19,247 @@
             animation: fadeIn .6s ease-out;
         }
 
-        /* Tema Dashboard */
-        .brand-red {
-            color: #C62828 !important;
+        .brand-primary {
+            color: #1e88e5;
         }
 
-        .brand-red-bg {
-            background: #C62828 !important;
+        .bg-soft {
+            background: #f4f8ff;
         }
 
-        .brand-red-soft {
-            background: #FDECEC !important;
+        .card-dashboard {
+            border-radius: 18px;
+            border: none;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, .08);
+            transition: .3s;
         }
 
-        /* Card Style */
-        .card-soft {
-            border-radius: 16px;
-            background: #fff;
-            border: 1px solid #f0f0f0;
-            box-shadow: 0 5px 18px rgba(0, 0, 0, 0.07);
-            transition: .25s ease-in-out;
-        }
-
-        .card-soft:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
+        .card-dashboard:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 18px 40px rgba(0, 0, 0, .15);
         }
 
         .stat-icon {
-            width: 58px;
-            height: 58px;
+            width: 56px;
+            height: 56px;
+            border-radius: 14px;
             display: flex;
             align-items: center;
             justify-content: center;
-            border-radius: 14px;
             font-size: 26px;
             color: #fff;
         }
+
+        .icon-blue {
+            background: #1e88e5;
+        }
+
+        .icon-green {
+            background: #43a047;
+        }
+
+        .icon-orange {
+            background: #fb8c00;
+        }
+
+        .icon-purple {
+            background: #8e24aa;
+        }
     </style>
 @endpush
-
-
 
 @section('content')
     <div class="container-fluid py-4 fade-in">
 
         {{-- HEADER --}}
         <div class="d-flex align-items-center mb-4">
-            <img src="{{ asset('assets/images/logo.png') }}" style="width:200px; margin-right:20px;" />
+            <img src="{{ asset('assets/images/logo.jpeg') }}" style="width:150px;" class="me-3">
 
             <div>
-                <h3 class="fw-bold brand-red mb-0">Dashboard Bina Desa</h3>
-                <p class="text-muted mb-0">Sistem Informasi Pariwisata & Homestay</p>
+                <h3 class="fw-bold mb-0 brand-primary">Dashboard Sistem Fasilitas Desa</h3>
+                <small class="text-muted">Monitoring & Manajemen Fasilitas Desa</small>
             </div>
 
-            {{-- JAM --}}
             <div class="ms-auto text-end">
-                <h4 class="fw-bold brand-red mb-0" id="clock" style="font-size:28px;"></h4>
-                <span class="text-muted" id="date-today"></span>
+                <div id="clock" class="fw-bold brand-primary fs-4"></div>
+                <small id="date-today" class="text-muted"></small>
             </div>
         </div>
 
-
-
-        {{-- ============================= --}}
-        {{-- STATISTIK --}}
-        {{-- ============================= --}}
-        <div class="row g-3 mb-4">
-
-            {{-- TOTAL HOMESTAY --}}
-            <div class="col-md-3">
-                <div class="card card-soft">
-                    <div class="card-body d-flex align-items-center">
-                        <div class="stat-icon brand-red-bg me-3">
-                            <i class="fa fa-hotel"></i>
-                        </div>
-                        <div>
-                            <h6 class="fw-bold brand-red mb-0">Total Homestay</h6>
-                            <span class="text-muted">{{ $totalHomestay }}</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            {{-- TOTAL DESTINASI --}}
-            <div class="col-md-3">
-                <div class="card card-soft">
-                    <div class="card-body d-flex align-items-center">
-                        <div class="stat-icon bg-primary me-3">
-                            <i class="fa fa-map-location-dot"></i>
-                        </div>
-                        <div>
-                            <h6 class="fw-bold text-primary mb-0">Destinasi Wisata</h6>
-                            <span class="text-muted">{{ $totalDestinasi }}</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            {{-- TOTAL BOOKING --}}
-            <div class="col-md-3">
-                <div class="card card-soft">
-                    <div class="card-body d-flex align-items-center">
-                        <div class="stat-icon bg-warning me-3">
-                            <i class="fa fa-calendar-check"></i>
-                        </div>
-                        <div>
-                            <h6 class="fw-bold text-warning mb-0">Total Booking</h6>
-                            <span class="text-muted">{{ $totalBooking }}</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-
-            {{-- ✔ VARIASI BARU : TOTAL KAMAR --}}
-            <div class="col-md-3">
-                <div class="card card-soft">
-                    <div class="card-body d-flex align-items-center">
-                        <div class="stat-icon bg-dark me-3">
-                            <i class="fa fa-bed"></i>
-                        </div>
-                        <div>
-                            <h6 class="fw-bold text-dark mb-0">Total Kamar</h6>
-                            <span class="text-muted">{{ \App\Models\KamarHomestay::count() }}</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-
-
-
-
-
-        {{-- ============================= --}}
-        {{-- CHART --}}
-        {{-- ============================= --}}
+        {{-- STAT CARDS --}}
         <div class="row g-4 mb-4">
 
-            {{-- CHART VISITS --}}
-            <div class="col-lg-6">
-                <div class="card card-soft p-3">
-                    <h6 class="fw-bold brand-red">Kunjungan Wisata (Mingguan)</h6>
-                    <canvas id="chartVisits" height="140"></canvas>
+            <div class="col-md-3">
+                <div class="card card-dashboard p-3">
+                    <div class="d-flex align-items-center">
+                        <div class="stat-icon icon-blue me-3">
+                            <i class="ti ti-users"></i>
+                        </div>
+                        <div>
+                            <small class="text-muted">Total Warga</small>
+                            <h4 class="fw-bold mb-0">{{ $totalWarga ?? 0 }}</h4>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            {{-- CHART HUNIAN --}}
-            <div class="col-lg-6">
-                <div class="card card-soft p-3">
-                    <h6 class="fw-bold text-primary">Tingkat Hunian Homestay (%)</h6>
-                    <canvas id="chartHunian" height="140"></canvas>
+            <div class="col-md-3">
+                <div class="card card-dashboard p-3">
+                    <div class="d-flex align-items-center">
+                        <div class="stat-icon icon-green me-3">
+                            <i class="ti ti-building"></i>
+                        </div>
+                        <div>
+                            <small class="text-muted">Fasilitas</small>
+                            <h4 class="fw-bold mb-0">{{ $totalFasilitas ?? 0 }}</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="card card-dashboard p-3">
+                    <div class="d-flex align-items-center">
+                        <div class="stat-icon icon-orange me-3">
+                            <i class="ti ti-calendar-event"></i>
+                        </div>
+                        <div>
+                            <small class="text-muted">Peminjaman Aktif</small>
+                            <h4 class="fw-bold mb-0">{{ $peminjamanAktif ?? 0 }}</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="card card-dashboard p-3">
+                    <div class="d-flex align-items-center">
+                        <div class="stat-icon icon-purple me-3">
+                            <i class="ti ti-wallet"></i>
+                        </div>
+                        <div>
+                            <small class="text-muted">Total Pembayaran</small>
+                            <h4 class="fw-bold mb-0">Rp {{ number_format($totalPembayaran ?? 0, 0, ',', '.') }}</h4>
+                        </div>
+                    </div>
                 </div>
             </div>
 
         </div>
 
-
-
-        {{-- ============================= --}}
-        {{-- LIST: HOMESTAY TERBARU --}}
-        {{-- ============================= --}}
+        {{-- CHART & INFO --}}
         <div class="row g-4">
 
-            {{-- HOMESTAY TERBARU --}}
-            <div class="col-lg-6">
-                <div class="card card-soft">
-                    <div class="card-header fw-bold brand-red">
-                        Homestay Terbaru
-                    </div>
-
-                    <div class="card-body">
-
-                        @if ($homestayTerbaru->count() == 0)
-                            <p class="text-muted fst-italic small">Belum ada homestay.</p>
-                        @else
-                            <ul class="list-group list-group-flush">
-
-                                @foreach ($homestayTerbaru as $hs)
-                                    <li class="list-group-item py-2 px-3">
-
-                                        <div class="d-flex align-items-center justify-content-between w-100">
-
-                                            {{-- Nama --}}
-                                            <span class="small fw-semibold text-dark">
-                                                {{ $hs->nama }}
-                                            </span>
-
-                                            {{-- Jumlah kamar --}}
-                                            <span class="badge bg-primary small" style="font-size: 11px;">
-                                                {{ $hs->kamar_count }} kamar
-                                            </span>
-
-                                        </div>
-
-                                    </li>
-                                @endforeach
-
-                            </ul>
-                        @endif
-
-                    </div>
+            {{-- CHART --}}
+            <div class="col-md-8">
+                <div class="card card-dashboard p-4">
+                    <h6 class="fw-bold mb-3">Statistik Peminjaman Bulanan</h6>
+                    <canvas id="chartPeminjaman" height="120"></canvas>
                 </div>
             </div>
 
-
-
-            {{-- EVENT --}}
-            <div class="col-lg-6">
-                <div class="card card-soft">
-                    <div class="card-header fw-bold text-primary">
-                        Ulasan Wisata Terbaru
-                    </div>
-
-                    <div class="card-body">
-
-                        @if ($ulasanTerbaru->count() == 0)
-                            <p class="text-muted fst-italic small">Belum ada ulasan dari warga.</p>
-                        @else
-                            <ul class="list-group list-group-flush">
-
-                                @foreach ($ulasanTerbaru as $u)
-                                    <li class="list-group-item py-2">
-
-                                        {{-- NAMA & DESTINASI --}}
-                                        <strong class="small d-block">
-                                            {{ $u->warga->nama ?? 'Warga Tidak Diketahui' }}
-                                        </strong>
-
-                                        <span class="text-primary fw-bold small d-block">
-                                            {{ $u->destinasi->nama ?? '-' }}
-                                        </span>
-
-                                        {{-- RATING (kecil) --}}
-                                        <div class="text-warning" style="font-size: 11px;">
-                                            @for ($i = 1; $i <= 5; $i++)
-                                                <i class="fa fa-star {{ $i <= $u->rating ? '' : 'text-secondary' }}"></i>
-                                            @endfor
-                                        </div>
-
-                                        {{-- KOMENTAR (lebih kecil) --}}
-                                        <div class="text-muted small" style="font-size: 12px;">
-                                            "{{ $u->komentar }}"
-                                        </div>
-
-                                        {{-- WAKTU --}}
-                                        <small class="text-secondary d-block" style="font-size: 11px;">
-                                            {{ \Carbon\Carbon::parse($u->waktu)->diffForHumans() }}
-                                        </small>
-
-                                    </li>
-                                @endforeach
-
-                            </ul>
-                        @endif
-
-                    </div>
+            {{-- INFO PANEL --}}
+            <div class="col-md-4">
+                <div class="card card-dashboard p-4 bg-soft">
+                    <h6 class="fw-bold mb-3">Info Sistem</h6>
+                    <ul class="list-unstyled mb-0 small">
+                        <li class="mb-2">👤 User Login: <strong>{{ session('user_name') }}</strong></li>
+                        <li class="mb-2">🔐 Role: <strong>{{ ucfirst(session('role')) }}</strong></li>
+                        <li class="mb-2">🕒 Login Terakhir: <strong>{{ now()->format('d M Y') }}</strong></li>
+                        <li>⚙️ Versi Sistem: <strong>v1.0.0</strong></li>
+                    </ul>
                 </div>
             </div>
-        </div>
 
-        <div class="col-lg-12">
-            <div class="card card-soft">
-                <div class="card-header fw-bold brand-red">
-                    Warga Terbaru
-                </div>
+            <div class="row g-4 mb-4">
 
-                <div class="card-body">
-
-                    @if ($wargaTerbaru->count() == 0)
-                        <p class="text-muted fst-italic small">Belum ada data warga.</p>
-                    @else
-                        <ul class="list-group list-group-flush">
-
-                            @foreach ($wargaTerbaru as $w)
-                                <li class="list-group-item py-2 px-3">
-
-                                    <div class="d-flex align-items-center justify-content-between w-100">
-
-                                        {{-- Nama Warga --}}
-                                        <span class="small fw-semibold text-dark">
-                                            {{ $w->nama }}
-                                        </span>
-
-                                        {{-- RT / RW --}}
-                                        <span class="badge bg-secondary small" style="font-size: 11px;">
-                                            RT {{ $w->rt }} / RW {{ $w->rw }}
-                                        </span>
-
-                                    </div>
-
-                                </li>
-                            @endforeach
-
-                        </ul>
-                    @endif
-
-                </div>
-            </div>
-        </div>
-
-
-        {{-- ============================= --}}
-        {{-- BANNER PERANGKAT DESA --}}
-        {{-- ============================= --}}
-        {{-- ============================= --}}
-        {{-- BANNER PERANGKAT DESA --}}
-        {{-- ============================= --}}
-        <div class="row mb-4 fade-in">
-            <div class="col-lg-12">
-                <div class="card card-soft overflow-hidden">
-
-                    <div class="row g-0">
-
-                        {{-- FOTO --}}
-                        <div class="col-lg-7">
-                            <img src="{{ asset('assets/images/foto1.png') }}" alt="Perangkat Desa" class="w-100 h-100"
-                                style="object-fit: cover; min-height: 300px;">
-                        </div>
-
-                        {{-- DESKRIPSI --}}
-                        <div class="col-lg-5 d-flex align-items-center">
-                            <div class="p-4">
-
-                                {{-- BADGE --}}
-                                <span class="badge brand-red-soft brand-red fw-semibold mb-3">
-                                    <i class="fa fa-users me-1"></i> Pariwisata & Homestay
-                                </span>
-
-                                {{-- JUDUL --}}
-                                <h3 class="fw-bold brand-red mb-2">
-                                    Pariwisata & Homestay
+                <div class="col-md-3">
+                    <div class="card card-soft p-4">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <small class="text-muted">Menunggu</small>
+                                <h3 class="fw-bold text-warning">
+                                    {{ $statusPeminjaman['menunggu'] ?? 0 }}
                                 </h3>
-
-                                {{-- DESKRIPSI --}}
-                                <p class="text-muted small mb-4">
-                                    Pariwisata dan homestay berperan aktif dalam pelayanan wisatawan, pengelolaan destinasi,
-                                    pengembangan ekonomi desa, serta mendukung promosi dan keberlanjutan pariwisata berbasis
-                                    masyarakat.
-                                </p>
-
-                                {{-- BUTTON --}}
-                                <div class="d-flex gap-2 flex-wrap">
-                                    <a href="#" class="btn brand-red-bg text-white px-4 rounded-pill shadow-sm">
-                                        <i class="fa fa-eye me-1"></i> Lihat Data
-                                    </a>
-
-                                    <a href="#" class="btn btn-outline-danger px-4 rounded-pill">
-                                        <i class="fa fa-plus me-1"></i> Tambah Baru
-                                    </a>
-                                </div>
-
+                            </div>
+                            <div class="stat-icon bg-warning">
+                                ⏳
                             </div>
                         </div>
-
                     </div>
-
                 </div>
-            </div>
-        </div>
-        {{-- ============================= --}}
-        {{-- IDENTITAS PENGEMBANG --}}
-        {{-- ============================= --}}
-        <div class="row g-4 mt-4 fade-in">
-            <div class="col-lg-12">
-                <div class="card card-soft p-4 d-flex flex-row align-items-center">
 
-                    <img src="{{ asset('assets/images/Muhammad Rafi.jpg') }}" class="rounded-circle shadow"
-                        style="width:120px; height:120px; object-fit:cover; border:4px solid #C62828;">
-
-                    <div class="ms-4">
-                        <h4 class="fw-bold mb-1 brand-red">Identitas Pengembang</h4>
-
-                        <p class="mb-1"><strong>Nama :</strong> Muhammad Rafi</p>
-                        <p class="mb-1"><strong>NIM :</strong> 2457301096</p>
-                        <p class="mb-1"><strong>Prodi :</strong> Sistem Informasi</p>
-
-                        <div class="d-flex mt-2" style="gap:14px; font-size:26px;">
-                            <a href="https://linkedin.com" target="_blank" class="text-primary">
-                                <i class="fa-brands fa-linkedin"></i>
-                            </a>
-                            <a href="https://github.com" target="_blank" class="text-dark">
-                                <i class="fa-brands fa-github"></i>
-                            </a>
-                            <a href="https://www.instagram.com/rraappii._/" target="_blank" class="text-danger">
-                                <i class="fa-brands fa-instagram"></i>
-                            </a>
+                <div class="col-md-3">
+                    <div class="card card-soft p-4">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <small class="text-muted">Disetujui</small>
+                                <h3 class="fw-bold text-primary">
+                                    {{ $statusPeminjaman['disetujui'] ?? 0 }}
+                                </h3>
+                            </div>
+                            <div class="stat-icon bg-primary">
+                                ✅
+                            </div>
                         </div>
                     </div>
-
                 </div>
-            </div>
-        </div>
 
-        <div class="row g-4 mt-4 fade-in">
-            <div class="col-lg-12">
-                <div class="card card-soft p-4 d-flex flex-row align-items-center">
-
-                    <img src="{{ asset('assets/images/ricardo.jpeg') }}" class="rounded-circle shadow"
-                        style="width:120px; height:120px; object-fit:cover; border:4px solid #C62828;">
-
-                    <div class="ms-4">
-                        <h4 class="fw-bold mb-1 brand-red">Identitas Pengembang</h4>
-
-                        <p class="mb-1"><strong>Nama :</strong> Ricardo Zulkifli Raja Guk-Guk</p>
-                        <p class="mb-1"><strong>NIM :</strong> 2457301121</p>
-                        <p class="mb-1"><strong>Prodi :</strong> Sistem Informasi</p>
-
-                        <div class="d-flex mt-2" style="gap:14px; font-size:26px;">
-                            <a href="https://linkedin.com" target="_blank" class="text-primary">
-                                <i class="fa-brands fa-linkedin"></i>
-                            </a>
-                            <a href="https://github.com" target="_blank" class="text-dark">
-                                <i class="fa-brands fa-github"></i>
-                            </a>
-                            <a href="https://www.instagram.com/rraappii._/" target="_blank" class="text-danger">
-                                <i class="fa-brands fa-instagram"></i>
-                            </a>
+                <div class="col-md-3">
+                    <div class="card card-soft p-4">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <small class="text-muted">Dipakai</small>
+                                <h3 class="fw-bold text-success">
+                                    {{ $statusPeminjaman['dipakai'] ?? 0 }}
+                                </h3>
+                            </div>
+                            <div class="stat-icon bg-success">
+                                🏢
+                            </div>
                         </div>
                     </div>
-
                 </div>
+
+                <div class="col-md-3">
+                    <div class="card card-soft p-4">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <small class="text-muted">Selesai</small>
+                                <h3 class="fw-bold text-secondary">
+                                    {{ $statusPeminjaman['selesai'] ?? 0 }}
+                                </h3>
+                            </div>
+                            <div class="stat-icon bg-secondary">
+                                📦
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
+
+
         </div>
 
     </div>
 @endsection
 
-
-
 @push('scripts')
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <script>
-        // ===========================
         // JAM REALTIME
-        // ===========================
         function updateClock() {
             const now = new Date();
-            document.getElementById("clock").innerHTML =
+            document.getElementById('clock').innerHTML =
                 now.toLocaleTimeString('id-ID', {
-                    hour12: false
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit'
                 });
 
-            document.getElementById("date-today").innerHTML =
+            document.getElementById('date-today').innerHTML =
                 now.toLocaleDateString('id-ID', {
                     weekday: 'long',
                     year: 'numeric',
@@ -472,52 +267,34 @@
                     day: 'numeric'
                 });
         }
-        updateClock();
         setInterval(updateClock, 1000);
+        updateClock();
 
-
-
-        // ===========================
-        // CHART VISITS
-        // ===========================
-        new Chart(document.getElementById("chartVisits"), {
+        // CHART
+        const ctx = document.getElementById('chartPeminjaman').getContext('2d');
+        new Chart(ctx, {
             type: 'line',
             data: {
-                labels: ["Sen", "Sel", "Rab", "Kam", "Jum", "Sab", "Min"],
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul'],
                 datasets: [{
-                    data: @json($chartKunjungan),
-                    borderColor: "#C62828",
-                    backgroundColor: "rgba(198,40,40,0.2)",
-                    tension: .4,
-                    borderWidth: 3
+                    label: 'Jumlah Peminjaman',
+                    data: [5, 9, 7, 14, 10, 18, 22],
+                    borderColor: '#1e88e5',
+                    backgroundColor: 'rgba(30,136,229,.15)',
+                    fill: true,
+                    tension: .4
                 }]
             },
             options: {
+                responsive: true,
                 plugins: {
                     legend: {
                         display: false
                     }
-                }
-            }
-        });
-
-
-        // ===========================
-        // CHART HUNIAN
-        // ===========================
-        new Chart(document.getElementById("chartHunian"), {
-            type: 'bar',
-            data: {
-                labels: @json($chartHunian['labels']),
-                datasets: [{
-                    data: @json($chartHunian['values']),
-                    backgroundColor: ['#C62828', '#8E0000', '#C62828', '#8E0000']
-                }]
-            },
-            options: {
-                plugins: {
-                    legend: {
-                        display: false
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true
                     }
                 }
             }

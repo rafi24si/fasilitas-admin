@@ -1,95 +1,159 @@
 @extends('layouts.admin.app')
-@section('title', 'Profil Saya')
+@section('title', 'Profil Akun')
 
 @push('styles')
-<style>
-    .profile-card {
-        border-radius: 18px;
-        background: #fff;
-        padding: 25px;
-        box-shadow: 0 5px 18px rgba(0,0,0,0.10);
-        transition: .2s;
-    }
+    <style>
+        .profile-card {
+            border-radius: 18px;
+            border: 1px solid #e5e7eb;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, .08);
+        }
 
-    .profile-card:hover {
-        transform: translateY(-3px);
-    }
+        .avatar-box {
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 4px solid #e5e7eb;
+            background: #f1f5f9;
+        }
 
-    .profile-img {
-        width: 140px;
-        height: 140px;
-        object-fit: cover;
-        border-radius: 50%;
-        border: 4px solid #C62828;
-    }
+        .avatar-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
 
-    .brand-red {color:#C62828;}
-</style>
+        .profile-title {
+            font-weight: 700;
+            font-size: 20px;
+        }
+
+        .subtle {
+            font-size: 13px;
+            color: #6b7280;
+        }
+
+        .fade-in {
+            animation: fadeIn .4s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(8px);
+            }
+
+            to {
+                opacity: 1;
+                transform: none;
+            }
+        }
+    </style>
 @endpush
 
 @section('content')
-<div class="container py-4">
+    <div class="container-fluid py-4 fade-in">
 
-    <h3 class="fw-bold brand-red mb-4">👤 Profil Saya</h3>
-
-    <div class="profile-card">
-
-        {{-- FOTO PROFIL --}}
-        <div class="text-center mb-4">
-            <img src="{{ $user->foto_url }}" class="profile-img shadow" alt="Foto Profil">
-            <h4 class="mt-3 fw-bold">{{ $user->name }}</h4>
-            <p class="text-muted">{{ $user->email }}</p>
+        {{-- HEADER --}}
+        <div class="mb-4">
+            <h4 class="profile-title mb-1">Profil Akun</h4>
+            <div class="subtle">Kelola informasi akun dan keamanan</div>
         </div>
 
-        {{-- ALERT SUCCESS --}}
-        @if (session('success'))
-            <div class="alert alert-success">{{ session('success') }}</div>
-        @endif
+        <div class="card profile-card p-4">
 
-        {{-- FORM UPDATE PROFIL --}}
-        <form action="{{ route('user.updateProfil') }}" method="POST" enctype="multipart/form-data">
-            @csrf
+            @if (session('success'))
+                <div class="alert alert-success alert-dismissible fade show">
+                    {{ session('success') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            @endif
 
-            <div class="row">
+            <form action="{{ route('user.updateProfil') }}" method="POST" enctype="multipart/form-data">
+                @csrf
 
-                {{-- NAMA --}}
-                <div class="col-md-6 mb-3">
-                    <label class="fw-semibold">Nama Lengkap</label>
-                    <input type="text" name="name" value="{{ old('name', $user->name) }}"
-                           class="form-control @error('name') is-invalid @enderror" required>
-                    @error('name') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                <div class="row g-4 align-items-center">
+
+                    {{-- AVATAR --}}
+                    <div class="col-md-3 text-center">
+                        <div class="avatar-box mx-auto mb-3">
+                            <img id="avatarPreview"
+                                src="{{ $user->fotoProfil
+                                    ? asset('storage/' . $user->fotoProfil->file_url)
+                                    : 'https://ui-avatars.com/api/?name=' . urlencode($user->name) . '&background=2563eb&color=fff' }}">
+                        </div>
+
+                        <input type="file" name="foto" accept="image/*" class="form-control form-control-sm"
+                            onchange="previewAvatar(this)">
+                        <div class="subtle mt-2">JPG / PNG • Max 2MB</div>
+                    </div>
+
+                    {{-- FORM --}}
+                    <div class="col-md-9">
+
+                        <div class="row g-3">
+
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Nama Lengkap</label>
+                                <input type="text" name="name" class="form-control"
+                                    value="{{ old('name', $user->name) }}" required>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">Email</label>
+                                <input type="email" name="email" class="form-control"
+                                    value="{{ old('email', $user->email) }}" required>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label fw-semibold">
+                                    Password Baru
+                                    <span class="subtle">(opsional)</span>
+                                </label>
+
+                                <div class="input-group">
+                                    <input type="password" name="password" id="passwordField" class="form-control"
+                                        placeholder="Kosongkan jika tidak diganti">
+
+                                    <button type="button" class="btn btn-outline-secondary" onclick="togglePassword()">
+                                        <i class="ti ti-eye"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
                 </div>
 
-                {{-- EMAIL --}}
-                <div class="col-md-6 mb-3">
-                    <label class="fw-semibold">Email</label>
-                    <input type="email" name="email" value="{{ old('email', $user->email) }}"
-                           class="form-control @error('email') is-invalid @enderror" required>
-                    @error('email') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                <hr class="my-4">
+
+                <div class="d-flex justify-content-end">
+                    <button class="btn btn-primary px-5 rounded-pill">
+                        💾 Simpan Perubahan
+                    </button>
                 </div>
 
-                {{-- PASSWORD --}}
-                <div class="col-md-6 mb-3">
-                    <label class="fw-semibold">Password (opsional)</label>
-                    <input type="password" name="password" class="form-control @error('password') is-invalid @enderror"
-                           placeholder="Biarkan kosong jika tidak ingin mengubah">
-                    @error('password') <div class="invalid-feedback">{{ $message }}</div> @enderror
-                </div>
-
-                {{-- FOTO --}}
-                <div class="col-md-6 mb-3">
-                    <label class="fw-semibold">Foto Profil</label>
-                    <input type="file" name="foto" accept="image/*"
-                           class="form-control @error('foto') is-invalid @enderror">
-                    @error('foto') <div class="invalid-feedback">{{ $message }}</div> @enderror
-                </div>
-
-            </div>
-
-            <button type="submit" class="btn btn-danger px-4 mt-2">Update Profil</button>
-        </form>
-
+            </form>
+        </div>
     </div>
 
-</div>
+    {{-- JS --}}
+    <script>
+        function previewAvatar(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = e => {
+                    document.getElementById('avatarPreview').src = e.target.result;
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function togglePassword() {
+            const field = document.getElementById('passwordField');
+            field.type = field.type === 'password' ? 'text' : 'password';
+        }
+    </script>
 @endsection

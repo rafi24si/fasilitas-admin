@@ -2,173 +2,271 @@
 @section('title', 'Edit User')
 
 @push('styles')
-<style>
-    .fade-in {
-        animation: fadeIn .5s ease-in-out;
-    }
+    <style>
+        /* =====================
+           ANIMATION
+        ===================== */
+        .fade-in {
+            animation: fadeIn .4s ease;
+        }
 
-    @keyframes fadeIn {
-        from {
-            opacity: 0;
-            transform: translateY(10px);
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(8px);
+            }
+
+            to {
+                opacity: 1;
+                transform: none;
+            }
         }
-        to {
-            opacity: 1;
-            transform: translateY(0);
+
+        /* =====================
+           CARD CONTAINER
+        ===================== */
+        .edit-card {
+            border-radius: 20px;
+            border: 1px solid #e5e7eb;
+            box-shadow: 0 14px 34px rgba(0, 0, 0, .12);
+            overflow: hidden;
+            background: #ffffff;
         }
-    }
-</style>
+
+        /* =====================
+           LEFT AVATAR PANEL
+        ===================== */
+        .avatar-wrapper {
+            text-align: center;
+            padding: 32px 24px;
+            background: linear-gradient(135deg, #16a34a, #22c55e);
+            color: #ffffff;
+        }
+
+        /* =====================
+           AVATAR
+        ===================== */
+        .avatar-box {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 5px solid rgba(255, 255, 255, .9);
+            margin: 0 auto 14px;
+            background: #ffffff;
+            box-shadow: 0 8px 22px rgba(0, 0, 0, .25);
+        }
+
+        .avatar-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* =====================
+           ROLE BADGE
+        ===================== */
+        .role-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, .18);
+            border: 1px solid rgba(255, 255, 255, .35);
+            color: #ffffff;
+            font-size: 12px;
+            padding: 6px 16px;
+            border-radius: 50px;
+            margin-top: 6px;
+            backdrop-filter: blur(6px);
+            font-weight: 600;
+        }
+
+        /* =====================
+           FORM AREA
+        ===================== */
+        .form-label {
+            font-weight: 600;
+            color: #065f46;
+        }
+
+        .form-control,
+        .form-select {
+            border-radius: 12px;
+            border: 1px solid #d1fae5;
+            transition: .2s ease;
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: #22c55e;
+            box-shadow: 0 0 0 3px rgba(34, 197, 94, .25);
+        }
+
+        /* =====================
+           BUTTON
+        ===================== */
+        .btn-primary {
+            background: linear-gradient(135deg, #16a34a, #22c55e);
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            padding: 10px 28px;
+            box-shadow: 0 8px 22px rgba(34, 197, 94, .35);
+            transition: .25s ease;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 14px 32px rgba(34, 197, 94, .5);
+        }
+
+        /* =====================
+           SMALL TEXT
+        ===================== */
+        .hint {
+            font-size: 12px;
+            color: #6b7280;
+        }
+    </style>
 @endpush
 
+
 @section('content')
-<div class="container-fluid fade-in">
+    <div class="container-fluid py-4 fade-in">
 
-    {{-- PAGE TITLE --}}
-    <h3 class="fw-bold text-blue mb-3">✏ Edit User</h3>
+        <div class="mb-4">
+            <h4 class="fw-bold text-primary mb-1">✏️ Edit User</h4>
+            <small class="text-muted">Perbarui data akun pengguna</small>
+        </div>
 
-    {{-- CARD --}}
-    <div class="card shadow-sm p-4 mx-auto"
-         style="border-radius:14px; max-width:700px;">
+        <div class="card edit-card">
+            <form action="{{ route('user.update', $user->id) }}" method="POST" enctype="multipart/form-data">
+                @csrf
+                @method('PUT')
 
-        <form action="{{ route('user.update', $user->id) }}"
-              method="POST"
-              enctype="multipart/form-data">
-            @csrf
-            @method('PUT')
+                <div class="row g-0">
 
-            {{-- =====================
-                 FOTO PROFIL
-            ====================== --}}
-            <div class="text-center mb-4">
+                    {{-- ================= LEFT : FOTO ================= --}}
+                    <div class="col-md-4 avatar-wrapper">
 
-                @if ($user->fotoProfil)
-                    <img src="{{ asset('storage/' . $user->fotoProfil->file_url) }}"
-                         class="rounded-circle shadow mb-2"
-                         width="120"
-                         height="120"
-                         style="object-fit:cover;">
-                @else
-                    <img src="https://ui-avatars.com/api/?name={{ urlencode($user->name) }}&background=C62828&color=fff&size=120&rounded=true"
-                         class="rounded-circle shadow mb-2">
-                @endif
+                        <div class="avatar-box">
+                            <img id="avatarPreview"
+                                src="{{ $user->fotoProfil
+                                    ? asset('storage/' . $user->fotoProfil->file_url)
+                                    : 'https://ui-avatars.com/api/?name=' . urlencode($user->name) . '&background=2563eb&color=fff' }}">
+                        </div>
 
-                <label class="fw-semibold d-block mt-2">Foto Profil</label>
+                        <strong>{{ $user->name }}</strong><br>
+                        <span class="role-badge">{{ ucfirst($user->role) }}</span>
 
-                <input type="file"
-                       name="foto"
-                       class="form-control mt-1"
-                       accept="image/*">
+                        <div class="mt-3">
+                            {{-- 🔥 NAME HARUS "foto" --}}
+                            <input type="file" name="foto" accept="image/*" class="form-control form-control-sm"
+                                onchange="previewAvatar(this)">
+                            <div class="hint mt-1">
+                                JPG / PNG • Maks 2MB
+                            </div>
+                        </div>
+                    </div>
 
-                <small class="text-muted">
-                    Format JPG/PNG • Maksimal 2MB
-                </small>
-            </div>
+                    {{-- ================= RIGHT : FORM ================= --}}
+                    <div class="col-md-8 p-4">
 
-            {{-- =====================
-                 NAMA
-            ====================== --}}
-            <div class="mb-3">
-                <label class="fw-semibold">Nama</label>
-                <input type="text"
-                       name="name"
-                       class="form-control"
-                       value="{{ old('name', $user->name) }}"
-                       required>
-            </div>
+                        <div class="row g-3">
 
-            {{-- =====================
-                 EMAIL
-            ====================== --}}
-            <div class="mb-3">
-                <label class="fw-semibold">Email</label>
-                <input type="email"
-                       name="email"
-                       class="form-control"
-                       value="{{ old('email', $user->email) }}"
-                       required>
+                            <div class="col-md-6">
+                                <label class="form-label">Nama Lengkap</label>
+                                <input type="text" name="name" class="form-control"
+                                    value="{{ old('name', $user->name) }}" required>
+                            </div>
 
-                <div id="email-status" class="mt-1"></div>
-            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Role</label>
+                                <select name="role" class="form-select" required>
+                                    <option value="admin" {{ $user->role == 'admin' ? 'selected' : '' }}>
+                                        Admin
+                                    </option>
+                                    <option value="petugas" {{ $user->role == 'petugas' ? 'selected' : '' }}>
+                                        Petugas
+                                    </option>
+                                </select>
+                            </div>
 
-            {{-- =====================
-                 PASSWORD
-            ====================== --}}
-            <div class="mb-3">
-                <label class="fw-semibold">
-                    Password
-                    <small class="text-muted">(kosongkan jika tidak diganti)</small>
-                </label>
-                <input type="password"
-                       name="password"
-                       class="form-control">
-            </div>
+                            <div class="col-12">
+                                <label class="form-label">Email</label>
+                                <input type="email" name="email" id="emailField" class="form-control"
+                                    value="{{ old('email', $user->email) }}" required>
+                                <div id="email-status" class="hint mt-1"></div>
+                            </div>
 
-            {{-- =====================
-                 ROLE
-            ====================== --}}
-            <div class="mb-4">
-                <label class="fw-semibold">Role</label>
-                <select name="role" class="form-control" required>
-                    <option value="admin" {{ $user->role === 'admin' ? 'selected' : '' }}>
-                        Admin
-                    </option>
-                    <option value="petugas" {{ $user->role === 'petugas' ? 'selected' : '' }}>
-                        Petugas
-                    </option>
-                </select>
-            </div>
+                            <div class="col-12">
+                                <label class="form-label">
+                                    Password Baru
+                                    <span class="hint">(opsional)</span>
+                                </label>
 
-            {{-- =====================
-                 ACTION BUTTON
-            ====================== --}}
-            <div class="d-flex gap-2">
-                <button type="submit" class="btn btn-success px-4">
-                    <i class="ti ti-check"></i> Update
-                </button>
+                                <div class="input-group">
+                                    <input type="password" name="password" id="passwordField" class="form-control"
+                                        placeholder="Kosongkan jika tidak diganti">
+                                    <button type="button" class="btn btn-outline-secondary" onclick="togglePassword()">
+                                        👁
+                                    </button>
+                                </div>
+                            </div>
 
-                <a href="{{ route('user.index') }}"
-                   class="btn btn-secondary px-4">
-                    Kembali
-                </a>
-            </div>
+                        </div>
 
-        </form>
+                        <hr class="my-4">
 
+                        <div class="d-flex justify-content-end gap-2">
+                            <a href="{{ route('user.index') }}" class="btn btn-light px-4">
+                                Batal
+                            </a>
+                            <button class="btn btn-primary px-4">
+                                💾 Simpan Perubahan
+                            </button>
+                        </div>
+
+                    </div>
+                </div>
+            </form>
+        </div>
     </div>
 
-</div>
-
-{{-- =========================
-     AJAX CEK EMAIL
-========================= --}}
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-
-    const emailInput = document.querySelector('input[name="email"]');
-    const statusBox  = document.getElementById('email-status');
-    const originalEmail = "{{ $user->email }}";
-
-    emailInput.addEventListener('input', function () {
-        const email = this.value;
-
-        if (!email || email === originalEmail) {
-            statusBox.innerHTML = '';
-            return;
+    {{-- ================= JS ================= --}}
+    <script>
+        function previewAvatar(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = e => {
+                    document.getElementById('avatarPreview').src = e.target.result;
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
         }
 
-        fetch("{{ route('user.checkEmail') }}?email=" + encodeURIComponent(email))
-            .then(res => res.json())
-            .then(data => {
-                if (data.exists) {
-                    statusBox.innerHTML =
-                        "<span class='text-danger'>Email sudah digunakan</span>";
-                } else {
-                    statusBox.innerHTML =
-                        "<span class='text-success'>Email tersedia ✓</span>";
-                }
-            });
-    });
+        function togglePassword() {
+            const field = document.getElementById('passwordField');
+            field.type = field.type === 'password' ? 'text' : 'password';
+        }
 
-});
-</script>
+        const emailField = document.getElementById('emailField');
+        const statusBox = document.getElementById('email-status');
+        const originalEmail = "{{ $user->email }}";
+
+        emailField.addEventListener('input', () => {
+            const email = emailField.value;
+
+            if (!email || email === originalEmail) {
+                statusBox.innerHTML = '';
+                return;
+            }
+
+            fetch("{{ route('user.checkEmail') }}?email=" + encodeURIComponent(email))
+                .then(res => res.json())
+                .then(data => {
+                    statusBox.innerHTML = data.exists ?
+                        "<span class='text-danger'>Email sudah digunakan</span>" :
+                        "<span class='text-success'>Email tersedia</span>";
+                });
+        });
+    </script>
 @endsection

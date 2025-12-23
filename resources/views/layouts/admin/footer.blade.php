@@ -2,42 +2,41 @@
 {{-- ============================= --}}
 {{--       GLOBAL FOOTER          --}}
 {{-- ============================= --}}
-<footer class="mt-5 py-4 bg-white border-top shadow-sm fade-in">
-    <div class="container d-flex flex-column flex-md-row justify-content-between align-items-center">
+<footer class="admin-footer fade-in">
+    <div class="container-fluid px-4">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-center">
 
-        {{-- LEFT SIDE --}}
-        <div class="text-center text-md-start mb-3 mb-md-0">
-            <h6 class="fw-bold mb-0" style="color:#C62828;">
-                Sistem Informasi Pariwisata & Homestay
-            </h6>
-            <small class="text-muted">
-                © <span id="year"></span> Bina Desa — All Rights Reserved
-            </small>
+            {{-- LEFT --}}
+            <div class="text-center text-md-start mb-3 mb-md-0">
+                <h6 class="fw-bold mb-0 text-primary">
+                    Sistem Administrasi Desa
+                </h6>
+                <small class="text-muted">
+                    Dashboard • Data Warga • Manajemen User
+                </small>
+                <br>
+                <small class="text-muted">
+                    © <span id="year"></span> Bina Desa — All Rights Reserved
+                </small>
+            </div>
+
+            {{-- RIGHT --}}
+            <div class="d-flex align-items-center gap-3" style="font-size:20px;">
+                <a href="#" class="text-primary" title="Website Resmi Desa">
+                    <i class="fa-solid fa-globe"></i>
+                </a>
+                <a href="#" class="text-success" title="Kontak Admin">
+                    <i class="fa-solid fa-phone"></i>
+                </a>
+                <a href="#" class="text-dark" title="Dokumentasi Sistem">
+                    <i class="fa-solid fa-book"></i>
+                </a>
+            </div>
+
         </div>
-
-        {{-- RIGHT SIDE SOCIAL ICONS --}}
-        <div class="d-flex align-items-center" style="gap:18px; font-size:22px;">
-
-            <a href="https://instagram.com" target="_blank" class="text-danger" title="Instagram">
-                <i class="fa-brands fa-instagram"></i>
-            </a>
-
-            <a href="https://facebook.com" target="_blank" class="text-primary" title="Facebook">
-                <i class="fa-brands fa-facebook"></i>
-            </a>
-
-            <a href="https://youtube.com" target="_blank" class="text-danger" title="YouTube">
-                <i class="fa-brands fa-youtube"></i>
-            </a>
-
-            <a href="https://github.com" target="_blank" class="text-dark" title="Github">
-                <i class="fa-brands fa-github"></i>
-            </a>
-
-        </div>
-
     </div>
 </footer>
+
 
 {{-- DYNAMIC YEAR --}}
 <script>
@@ -55,7 +54,7 @@
         position: fixed;
         bottom: 25px;
         right: 25px;
-        background-color: #25D366;
+        background-color: #076228;
         border-radius: 50%;
         padding: 10px;
         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
@@ -70,6 +69,26 @@
     #whatsapp-float:hover {
         transform: scale(1.1);
         background-color: #20b955;
+    }
+
+
+    /* =====================
+   ADMIN FOOTER FIX
+===================== */
+    .admin-footer {
+        margin-left: 260px;
+        /* 🔥 sejajar sidebar */
+        background: #1fe962;
+        border-top: 1px solid #e5e7eb;
+        padding: 20px 0;
+        box-shadow: 0 -2px 10px rgba(0, 0, 0, .05);
+    }
+
+    /* responsive */
+    @media (max-width: 992px) {
+        .admin-footer {
+            margin-left: 0;
+        }
     }
 </style>
 

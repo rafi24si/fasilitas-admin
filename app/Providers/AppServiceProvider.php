@@ -21,13 +21,5 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        View::composer('*', function ($view) {
-            if (session('user_id')) {
-                $user = User::with('fotoProfil')
-                            ->find(session('user_id'));
-
-                $view->with('user', $user);
-            }
-        });
     }
 }
